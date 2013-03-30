@@ -86,7 +86,7 @@ class fileman {
         if (!$this->cacheDir) {
             $this->cacheDir = '';
         } else {
-            if (!preg_match('/^(\/|[[:alpha:]]:[\/\\\\])/', $this->cacheDir)) {
+            if (!preg_match('#^(/|[[:alpha:]]:[/\\\\])#', $this->cacheDir)) {
                 $this->cacheDir = rtrim(dirname(__FILE__), '\/') . '/' . $this->cacheDir;
             }
             if (!file_exists($this->cacheDir)) {
