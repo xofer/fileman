@@ -86,8 +86,8 @@ class fileman {
         if (!$this->cacheDir) {
             $this->cacheDir = '';
         } else {
-            if (substr($this->cacheDir, 0, 1) != '/') {
-                $this->cacheDir = rtrim(dirname(__FILE__), '/') . '/' . $this->cacheDir;
+            if (!preg_match('#^(/|[[:alpha:]]:[/\\\\])#', $this->cacheDir)) {
+                $this->cacheDir = rtrim(dirname(__FILE__), '\/') . '/' . $this->cacheDir;
             }
             if (!file_exists($this->cacheDir)) {
                 if (!@mkdir($this->cacheDir)) {
@@ -211,6 +211,7 @@ class fileman {
                         $arr = explode(' ', $arr[0]);
                         if (isset($arr[1]) && $arr[1] == 200) {
                             $this->filename = $path . $this->filename;
+                            $this->isLocal = FALSE;
                             return TRUE;
                         }
                     }
@@ -254,7 +255,7 @@ class fileman {
             } elseif ($this->isLocal && (strpos($os, 'freebsd') !== FALSE || strpos($os, 'linux') !== FALSE)) {
                 // use 'file' command:
                 $this->mimeType = trim(@shell_exec('file -bi "' . $this->filename . '"'));
-            } elseif (@(include 'MIME/Type.php')) {
+            } elseif ($this->isLocal && @(include 'MIME/Type.php')) {
                 // use PEAR MIME package:
                 $this->mimeType = MIME_Type::autoDetect($this->filename);
             } else {
